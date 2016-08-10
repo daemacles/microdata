@@ -33,7 +33,10 @@ set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 #set (LIBS LibraryName...)
 
-add_executable (${PROJECT_NAME} src/main.cc)
+include_directories (
+  include
+  )
+add_executable (${PROJECT_NAME} src/main.cc src/microdata.c)
 target_link_libraries (${PROJECT_NAME} ${EXTRA_LIBS} ${LIBS})
 
 # Compile flags
