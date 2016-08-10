@@ -1,3 +1,10 @@
+/////////////////////////////////////////////////////////////////////////////
+//                                 microdata.h
+/////////////////////////////////////////////////////////////////////////////
+//
+// Copyright (c) 2016 Jim Youngquist under the MIT license, see LICENSE
+//
+
 #ifndef  MICRODATA_H_
 #define  MICRODATA_H_
 
@@ -60,19 +67,19 @@ SIZE_T SlipDecode (const uint8_t* src, uint8_t* dest, SIZE_T capacity);
 ///   uint32_t val4;
 /// } MyData;
 ///
-/// MyData data = {
-///   .val1 = 42,
-///   .val2 = 55,
-///   .val3 = 24000,
-///   .val4 = 456234234
-/// };
+///  MyData data = {
+///    .val1 = 42,
+///    .val2 = 55,
+///    .val3 = 24000,
+///    .val4 = 456234234
+///  };
 ///
-/// uint8_t to_send[sizeof(MyData)];
-/// uint8_t *cursor = to_send;
-/// cursor = PackUint8 (cursor, data.val1);
-/// cursor = PackUint8 (cursor, data.val2);
-/// cursor = PackInt16 (cursor, data.val3);
-/// cursor = PackUint32 (cursor, data.val4);
+///  uint8_t to_send[sizeof(MyData)];
+///  uint8_t *cursor = to_send;
+///  cursor = PackUint8 (cursor, data.val1);
+///  cursor = PackUint8 (cursor, data.val2);
+///  cursor = PackInt16 (cursor, data.val3);
+///  cursor = PackUint32 (cursor, data.val4);
 ///
 uint8_t* PackUint8  (uint8_t* buffer, uint8_t  value);
 uint8_t* PackUint16 (uint8_t* buffer, uint16_t value);
