@@ -1,37 +1,9 @@
 cmake_minimum_required (VERSION 2.6)
 
-SET (CMAKE_C_COMPILER             "clang")
-SET (CMAKE_CXX_COMPILER             "clang++")
-
-set (PROJECT_NAME MyProject)
+set (PROJECT_NAME microdata)
 project (${PROJECT_NAME})
 
-## Set optional features.  This will show up as a preprocessor variable
-option (USE_GLIBCXX_DEBUG 
-  "Use the _GLIBCXX_DEBUG macro for nicer debugging and error checking of the c++ standard library.  Warning, it breaks ABI compatibility so don't pass container instantiations between translation units that don't have the same debug mode."
-  OFF)
-## USE_MY_LIBRARY in source.
-#option (USE_MY_LIBRARY
-#        "Use the provided library" ON)
-
-## Support for Clang's CompilationDatabase system
 set (CMAKE_EXPORT_COMPILE_COMMANDS 1)
-
-## Compile and create a library.  STATIC is default unless BUILD_SHARED_LIBS
-## is on.
-#add_library (LibraryName src/sources.cc)
-
-#if (USE_MY_LIBRARY)
-  ## Search for include files here as well
-  #include_directories ("{PROJECT_SOURCE_DIR}/some_sub_path")
-
-  ## Run Cmake also in this dir
-  #add_subdirectory (some_sub_path)
-
-  #set (EXTRA_LIBS ${EXTRA_LIBS} LibraryName)
-#endif (USE_MY_LIBRARY)
-
-#set (LIBS LibraryName...)
 
 include_directories (
   include
@@ -51,18 +23,4 @@ SET (CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXXFLAGS} -g")
 SET (CMAKE_CXX_FLAGS_MINSIZEREL     "${CMAKE_CXXFLAGS} -Os -DNDEBUG")
 SET (CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXXFLAGS} -O2 -g")
 SET (CMAKE_CXX_FLAGS_RELEASE        "${CMAKE_CXXFLAGS} -O3 -DNDEBUG")
-
-if (USE_GLIBCXX_DEBUG)
-  # Prefer using G++ for debug mode because the GLIBCXX_DEBUG flag for pretty
-  # printing collections in GDB doesn't seem to work with clang.
-  string(TOUPPER ${CMAKE_BUILD_TYPE} DEBUG_MODE)
-  if (DEBUG_MODE MATCHES "DEBUG")
-    set (CMAKE_CXX_COMPILER "g++")
-    set (CMAKE_CXX_FLAGS_DEBUG          "${CMAKE_CXXFLAGS} -g -D_GLIBCXX_DEBUG")
-  elseif (DEBUG_MODE MATCHES "RELWITHDEBINFO")
-    set (CMAKE_CXX_COMPILER "g++")
-    set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXXFLAGS} -O2 -g -D_GLIBCXX_DEBUG")
-  endif (DEBUG_MODE MATCHES "DEBUG")
-endif (USE_GLIBCXX_DEBUG)
-
 
