@@ -29,11 +29,12 @@ void RunPackTest (uint32_t roll) {
 }
 
 int main(int argc, char **argv) {
-  // DELETE THESE.  Used to suppress unused variable warnings.
+  // Suppress unused variable warnings.
   (void)argc;
   (void)argv;
 
-  // Test packing by testing over 10000 random numbers
+  //-------------------------------------------------------------------------
+  // Test packing by testing on 10000 random numbers
   std::default_random_engine generator;
   std::uniform_int_distribution<uint32_t> dist(1, (1 << 31)-1);
   auto die = std::bind(dist, generator);
@@ -49,22 +50,25 @@ int main(int argc, char **argv) {
     RunPackTest<int32_t>(sign*roll);
   }
 
+  //-------------------------------------------------------------------------
   // Test SLIP by encode --> decode --> compare
-  uint8_t in_buffer[250];
+  uint8_t in_buffer[50];
   for (uint32_t i = 0; i < sizeof(in_buffer); ++i) {
-    in_buffer[i] = i;
+    in_buffer[i] = i + 50;
   }
 
-  uint8_t out_buffer[512];
+  uint8_t out_buffer[100];
   uint8_t len = SlipEncode (in_buffer, out_buffer, sizeof(in_buffer));
   assert(len > 0);
   memset (in_buffer, 0, sizeof(in_buffer));
   len = SlipDecode (out_buffer, in_buffer, sizeof(in_buffer));
   assert (len == sizeof(in_buffer));
+
   for (uint32_t i = 0; i < sizeof(in_buffer); ++i) {
-    assert(in_buffer[i] == i);
+    assert(in_buffer[i] == i + 50);
   }
 
+  //-------------------------------------------------------------------------
   // End to end Test
   typedef struct {
     uint8_t val1;
@@ -73,34 +77,38 @@ int main(int argc, char **argv) {
     uint32_t val4;
   } MyData;
 
-  MyData data = {
+  MyData in_data = {
     .val1 = 42,
     .val2 = 55,
     .val3 = 24000,
     .val4 = 456234234
   };
 
+  // Serialize in_data
   uint8_t *cursor = in_buffer;
-  cursor = PackUint8 (cursor, data.val1);
-  cursor = PackUint8 (cursor, data.val2);
-  cursor = PackInt16 (cursor, data.val3);
-  cursor = PackUint32 (cursor, data.val4);
+  cursor = PackUint8 (cursor, in_data.val1);
+  cursor = PackUint8 (cursor, in_data.val2);
+  cursor = PackInt16 (cursor, in_data.val3);
+  cursor = PackUint32 (cursor, in_data.val4);
 
+  // SLIP it up
   len = SlipEncode(in_buffer, out_buffer, sizeof(MyData));
-  memset (in_buffer, 0, sizeof(in_buffer));
-  len = SlipDecode(out_buffer, in_buffer, sizeof(in_buffer));
   assert(len > 0);
-  cursor = in_buffer;
+  len = SlipDecode(out_buffer, out_buffer, sizeof(out_buffer));
+  assert(len > 0);
+
+  // Deserialize out_data
   MyData out_data;
+  cursor = in_buffer;
   cursor = UnpackUint8 (cursor, &out_data.val1);
   cursor = UnpackUint8 (cursor, &out_data.val2);
   cursor = UnpackInt16 (cursor, &out_data.val3);
   cursor = UnpackUint32 (cursor, &out_data.val4);
 
-  assert(data.val1 == out_data.val1);
-  assert(data.val2 == out_data.val2);
-  assert(data.val3 == out_data.val3);
-  assert(data.val4 == out_data.val4);
+  assert(in_data.val1 == out_data.val1);
+  assert(in_data.val2 == out_data.val2);
+  assert(in_data.val3 == out_data.val3);
+  assert(in_data.val4 == out_data.val4);
 
   std::cout << "All tests pass" << std::endl;
 

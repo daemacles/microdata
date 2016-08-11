@@ -25,6 +25,9 @@ extern "C" {
 ///--------------------------------------------------------------------------
 /// \brief Encodes some bytes as a SLIP frame.
 ///
+/// NOTE: Encoding CAN NOT be done in place, that is, src and dest MUST be
+/// different.
+///
 /// \param src  The source buffer.
 /// \param dest The output buffer containing the SLIP frame.  Make sure there
 ///             is enough room here... The most conservative estimate is
@@ -39,6 +42,9 @@ SIZE_T SlipEncode (const uint8_t* src, uint8_t* dest, SIZE_T size);
 
 ///--------------------------------------------------------------------------
 /// \brief Decodes a SLIP frame from a buffer.
+///
+/// NOTE: Decoding can be done in place, that is, src and dest can be the same
+/// thing!
 ///
 /// \param src  The source buffer containing a valid SLIP frame (has
 ///             SLIP_FRAME_END somewhere in it).
